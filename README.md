@@ -8,9 +8,9 @@ $
 Build and export the filesystem from the Docker image:
 
 ```sh
-$ docker build -t mydebian
-$ CID=$(docker run -d mydebian /bin/true)
-$ docker export -o linux.tar ${CID}
+$ docker build -t dock2vm .
+$ CID=$(docker run -d dock2vm /bin/true)
+$ docker export -o dock2vm.tar ${CID}
 ```
 
 Then, use Docker to run the development container:
@@ -23,6 +23,13 @@ Now you can run the "flesh it out" script to define a virtual machine disk image
 
 ```sh
 $ source /os/flesh.sh
+...
+$ exit
 ```
 
-This should result in a `linux.img` file, which can then be used to launch a virtual machine.
+This should result in a `dock2vm.img` file, which can then be used to launch a virtual machine. You can do so with qemu (again from WSL if on Windows):
+
+```sh
+$ sudo apt install -y qemu qemu-system
+$ qemu-system-x86_64 -drive file=dock2vm.img,index=0,media=disk,format=raw
+```
