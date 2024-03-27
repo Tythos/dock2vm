@@ -37,7 +37,7 @@ https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 
 - [x] Should no longer need "development container" (straight from WSL)
 
-- [ ] Do we need separate "os" and "mnt" paths?
+- [x] Do we need separate "os" and "mnt" paths? Sort of, it's primarily a permissions issue.
 
 - [ ] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
 
