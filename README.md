@@ -33,3 +33,19 @@ This should result in a `dock2vm.img` file, which can then be used to launch a v
 $ sudo apt install -y qemu qemu-system
 $ qemu-system-x86_64 -drive file=dock2vm.img,index=0,media=disk,format=raw
 ```
+
+Milestones:
+
+- [ ] Should boot from qemu
+
+- [ ] Should no longer need "development container" (straight from WSL)
+
+- [ ] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
+
+- [ ] Should extend to Alpine
+
+- [ ] Should extend to Nix w/ configuration parameterized
+
+- [ ] Should build/register as DigitalOcean custom image (terraform module as git submodule?)
+
+- [ ] Should be able to "spin up" Droplet resources with arbitrary configurations from that custom image
