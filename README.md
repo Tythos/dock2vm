@@ -1,3 +1,5 @@
+# dock2vm
+
 If on Windows, launch WSL for unix-style device binding:
 
 ```sh
@@ -23,7 +25,13 @@ The script cleans up mounts and devices, but you can also clean artifacts from t
 $ git clean -Xfd
 ```
 
-Milestones:
+## Credit
+
+While I'm trying to streamline this, ensure it works on Windows/WSL, and eventually fold into a DigitalOcean custom image with NixOS support, the heavy lifting for this process was derived from an outstanding article by Ivan Velichko:
+
+https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
+
+## Milestones:
 
 - [x] Should boot from qemu
 
