@@ -44,8 +44,20 @@ extlinux --install $MNT_PATH/boot > $OUTPUT 2>&1
 cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg > $OUTPUT
 rm $MNT_PATH/.dockerenv > $OUTPUT
 
-# 7. Unmounting and writing master boot record...
-echo 7. Unmounting and writing master boot record...
+# 7. Updating critical filesystem permissions...
+echo 7. Updating critical filesystem permissions...
+sudo chown root $MNT_PATH/var/empty
+sudo chgrp root $MNT_PATH/var/empty
+sudo chmod 744 $MNT_PATH/var/empty
+
+# 8. Unmounting and writing master boot record...
+echo 8. Unmounting and writing master boot record...
 sudo umount $MNT_PATH
 losetup -d ${LOOPDEVICE}
 dd if=/usr/lib/syslinux/mbr/mbr.bin of=$NAME.img bs=440 count=1 conv=notrunc status=none
+
+# 9. Compress final virtual image file
+echo 9. Compress final virtual image file
+gzip -k $NAME.img -c > $NAME.img.gz
+FINALSIZE_MB=$(expr $(stat -c %s $NAME.img.gz) / 1024 / 1024)
+echo Final size: $FINALSIZE_MB MB

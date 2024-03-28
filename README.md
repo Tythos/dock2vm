@@ -39,7 +39,9 @@ https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 
 - [x] Do we need separate "os" and "mnt" paths? Sort of, it's primarily a permissions issue.
 
-- [ ] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
+- [?] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
+
+      - [ ] When spinning up droplet: `/dev/sda1: Can't lookup blockdev; mounting... on /sysroot failed: no such file; mounting root: failed; initramfs emergency recovery shell launched`
 
 - [x] Should extend to Alpine
 
@@ -48,3 +50,5 @@ https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 - [ ] Should build/register as DigitalOcean custom image (terraform module as git submodule?)
 
 - [ ] Should be able to "spin up" Droplet resources with arbitrary configurations from that custom image
+
+- [x] Add compression pass to `.img` artifact

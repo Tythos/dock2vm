@@ -4,3 +4,4 @@ os/
 *.img
 *.tar
 *.vdi
+*.img.gz
