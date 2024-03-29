@@ -29,7 +29,12 @@ echo "type=83,bootable" | sfdisk $NAME.img > $OUTPUT
 echo 4. Formatting filesystem within parition...
 LOOPDEVICE=$(losetup -f)
 losetup -o $(expr $BLOCK_SIZE \* 2048) ${LOOPDEVICE} $NAME.img > $OUTPUT
-mkfs.ext4 ${LOOPDEVICE} -q > $OUTPUT
+#mkfs.ext4 ${LOOPDEVICE} -q > $OUTPUT
+
+# 5. Create the EFI system partition
+parted --script /dev/loopX mklabel gpt
+parted --script /dev/loopX mkpart primary ext4 2048s 10G
+parted --script /dev/loopX mkpart primary fat32 10G 100%
 
 # 5. Copying filesystem to new partition...
 echo 5. Copying filesystem to new partition...
