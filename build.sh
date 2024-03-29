@@ -5,7 +5,7 @@ echo 0. Preparing working environment...
 NAME=dock2vm
 OUTPUT=/dev/null # change to /dev/stdout for "verbose"
 sudo apt-get update > $OUTPUT
-sudo apt-get -y install extlinux fdisk qemu-utils > $OUTPUT
+sudo apt-get -y install grub2-common grub-efi-amd64 fdisk qemu-utils > $OUTPUT
 
 # 1. Capturing image filesystem in TAR archive...
 echo 1. Capturing image filesystem in TAR archive...
@@ -40,8 +40,8 @@ sudo cp -a $OS_PATH/. $MNT_PATH
 
 # 6. Setting up bootloader...
 echo 6. Setting up bootloader...
-extlinux --install $MNT_PATH/boot > $OUTPUT 2>&1
-cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg > $OUTPUT
+grub-install --boot-directory=$MNT_PATH/boot --target=x86_64-efi /dev/sda > $OUTPUT 2>&1
+cp grub.cfg $MNT_PATH/boot/grub/custom.cfg > $OUTPUT
 rm $MNT_PATH/.dockerenv > $OUTPUT
 
 # 7. Updating critical filesystem permissions...

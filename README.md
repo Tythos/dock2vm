@@ -31,6 +31,24 @@ While I'm trying to streamline this, ensure it works on Windows/WSL, and eventua
 
 https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 
+Other useful DigitalOcean resources include:
+
+https://docs.digitalocean.com/products/images/custom-images/details/limits/
+
+https://docs.digitalocean.com/products/images/custom-images/details/features/
+
+And a great talk by Mason Egger:
+
+https://www.youtube.com/watch?v=_Wk3jMKLQ1I
+
+Some relevant resources on OpenStack VM image specifications:
+
+https://docs.openstack.org/image-guide/openstack-images.html
+
+There are also several useful articles on custom Droplet kernel management requirements:
+
+https://docs.digitalocean.com/products/droplets/how-to/kernel/
+
 ## Milestones:
 
 - [x] Should boot from qemu
@@ -39,9 +57,11 @@ https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 
 - [x] Do we need separate "os" and "mnt" paths? Sort of, it's primarily a permissions issue.
 
-- [?] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
+- [ ] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
 
       - [ ] When spinning up droplet: `/dev/sda1: Can't lookup blockdev; mounting... on /sysroot failed: no such file; mounting root: failed; initramfs emergency recovery shell launched`
+
+      - [ ] May need to switch bootloaders from extlinux to grub
 
 - [x] Should extend to Alpine
 
@@ -52,3 +72,4 @@ https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 - [ ] Should be able to "spin up" Droplet resources with arbitrary configurations from that custom image
 
 - [x] Add compression pass to `.img` artifact
+

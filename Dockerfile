@@ -1,6 +1,6 @@
 FROM alpine:3.19
 RUN apk update 
-RUN apk add linux-virt openrc cloud-init bash openssh
+RUN apk add linux-virt openrc cloud-init bash openssh cloud-utils cloud-utils-growpart
 RUN echo "root:root" | chpasswd
 RUN chown root /var/empty
 RUN chgrp root /var/empty
