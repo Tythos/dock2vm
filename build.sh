@@ -1,8 +1,16 @@
 #!/bin/bash
 #
-echo 1. Preparing working environment...
+echo 1. Defining parameters...
+export UID=$(id -u)
+export GID=$(id -g)
+export VM_SIZE_SIZE=1024
 export NAME=dock2vm
+export OS_PATH=./os
+export DISK_SIZE=2G
+export MNT_PATH=./mnt
 export OUTPUT=/dev/stdout # for "verbose", set to /dev/stdout; for "quiet", set to /dev/null
+#
+echo 1. Preparing working environment...
 sudo apt-get update > $OUTPUT
 sudo apt-get -y install grub2-common grub-efi-amd64 fdisk qemu-utils > $OUTPUT
 #
@@ -11,13 +19,9 @@ docker build -q -t $NAME . > $OUTPUT
 export CID=$(docker run -d $NAME /bin/true)
 docker export -o $NAME.tar ${CID} > $OUTPUT
 #
-echo 1. Extracting filesystem to mount folder...
-export OS_PATH=./os
+echo 1. Extracting filesystem and copying disk image...
 mkdir -p $OS_PATH
 tar --numeric-owner --directory=$OS_PATH -xf ./$NAME.tar
-#
-echo 1. Creating disk image...
-export DISK_SIZE=2G
 dd if=/dev/zero of=$NAME.img bs=1M count=$(expr $DISK_SIZE \* 1024) status=none > $OUTPUT
 #
 echo 1. Attaching loop device to the disk image...
@@ -38,7 +42,6 @@ sudo mkfs.vfat -F 32 -n EFI ${LOOPDEVICE1} > $OUTPUT
 sudo mkfs.ext4 -L root ${LOOPDEVICE2} -q > $OUTPUT
 #
 echo 1. Mounting and copying files...
-export MNT_PATH=./mnt
 mkdir -p $MNT_PATH
 sudo mount ${LOOPDEVICE2} $MNT_PATH
 sudo mkdir -p $MNT_PATH/boot/efi
