@@ -13,13 +13,13 @@ export VM_DISK_SIZE_SECTOR=$(expr $VM_DISK_SIZE_MB \* 1024 \* 1024 / 512)
 export OUTPUT=/dev/stdout # for "verbose", set to /dev/stdout; for "quiet", set to /dev/null
 #
 echo 1. Updating dependencies...
-sudo apt-get update > $OUTPUT
-sudo apt-get -y install grub2-common grub-efi-amd64 fdisk qemu-utils > $OUTPUT
+sudo apt-get update
+sudo apt-get -y install grub2-common grub-efi-amd64 fdisk qemu-utils
 #
 echo 1. Building image and dumping filesystem to .TAR archive...
-docker build -q -t $NAME . > $OUTPUT
+docker build -q -t $NAME .
 export CID=$(docker run -d $NAME /bin/true)
-docker export -o ./$NAME.tar ${CID} > $OUTPUT
+docker export -o ./$NAME.tar ${CID}
 #
 echo 1. Extracting tar archive...
 mkdir -p $OS_PATH
