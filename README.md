@@ -1,6 +1,6 @@
 # dock2vm
 
-If on Windows, launch WSL for unix-style device binding (e.g., loop devices, shell mounting, bootloader configurations, MBR ):
+If on Windows, launch WSL for unix-style device binding (e.g., loop devices, shell mounting, bootloader configurations):
 
 ```sh
 > wsl

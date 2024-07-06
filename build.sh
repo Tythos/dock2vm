@@ -1,9 +1,6 @@
 #!/bin/bash
 #
 echo 1. Defining parameters...
-export UID=$(id -u)
-export GID=$(id -g)
-export VM_SIZE_SIZE=1024
 export NAME=dock2vm
 export OS_PATH=./$NAME.dir
 export DISK_SIZE=2G
@@ -48,7 +45,6 @@ sudo chmod -R u+rwX,go+rX,go-w $MNT_PATH
 #
 echo 1. Setting up extlinux w/ boot config...
 sudo extlinux --install $MNT_PATH/boot
-sudo cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg
 sudo rm $MNT_PATH/.dockerenv
 #
 echo 1. Unmounting from device...
