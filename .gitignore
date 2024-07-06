@@ -5,3 +5,5 @@ os/
 *.tar
 *.vdi
 *.img.gz
+*.qcow2
+*.dir/

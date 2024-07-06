@@ -5,7 +5,7 @@ export UID=$(id -u)
 export GID=$(id -g)
 export VM_SIZE_SIZE=1024
 export NAME=dock2vm
-export OS_PATH=./os
+export OS_PATH=./$NAME.dir
 export DISK_SIZE=2G
 export MNT_PATH=./mnt
 export VM_DISK_SIZE_MB=1024
@@ -19,44 +19,50 @@ sudo apt-get -y install grub2-common grub-efi-amd64 fdisk qemu-utils
 echo 1. Building image and dumping filesystem to .TAR archive...
 docker build -q -t $NAME .
 export CID=$(docker run -d $NAME /bin/true)
-docker export -o ./$NAME.tar ${CID}
+docker export -o ./$NAME.tar $CID
 #
 echo 1. Extracting tar archive...
 mkdir -p $OS_PATH
 tar -C $OS_PATH --numeric-owner -xf ./$NAME.tar
 #
-echo 1. Creating disk image...
-dd if=/dev/zero of=./$NAME.img bs=${VM_DISK_SIZE_SECTOR} count=512
-#
-echo 1. Making partition...
+echo 1. Creating disk image and paritioning...
+dd if=/dev/zero of=./$NAME.img bs=$VM_DISK_SIZE_SECTOR count=512
 echo "type=83,bootable" | sfdisk ./$NAME.img
 #
-echo 1. Formatting partition with ext4...
+echo 1. Formatting with ext4 via loop device...
 sudo losetup -D
 export LOOPDEVICE=$(losetup -f)
 #
 echo 1. Setting up loop device...
-sudo losetup -o $(expr 512 \* 2048) ${LOOPDEVICE} ./$NAME.img
-sudo mkfs.ext4 ${LOOPDEVICE}
+sudo losetup -o $(expr 512 \* 2048) $LOOPDEVICE ./$NAME.img
+sudo mkfs.ext4 $LOOPDEVICE
 #
 echo 1. Copying directory structure to partition...
 mkdir -p $MNT_PATH
-sudo mount -t auto ${LOOPDEVICE} $MNT_PATH
-sudo cp -a $OS_PATH $MNT_PATH
+sudo mount -t auto $LOOPDEVICE $MNT_PATH
+sudo cp -a $OS_PATH/. $MNT_PATH
 #
-echo 1. Setting up extlinux...
-extlinux --install $MNT_PATH/boot
-cp $OS_PATH/syslinux.cfg $MNT_PATH/boot/syslinux.cfg
-rm $MNT_PATH/.dockerenv
+echo 1. Seting global filesystem permissions...
+sudo chown -R root:root $MNT_PATH
+sudo chmod -R u+rwX,go+rX,go-w $MNT_PATH
+#
+echo 1. Setting up extlinux w/ boot config...
+sudo extlinux --install $MNT_PATH/boot
+sudo cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg
+sudo rm $MNT_PATH/.dockerenv
 #
 echo 1. Unmounting from device...
-umount $MNT_PATH
+sudo umount $MNT_PATH
 sudo losetup -D
 #
 echo 1. Writing syslinux MBR...
 dd if=/usr/lib/syslinux/mbr/mbr.bin of=./$NAME.img bs=440 count=1 conv=notrunc
 #
 echo 1. Converting image to qcow2 format...
-qemu-img convert -c ./$NAME.img -O qcow2 $NAME.qcow2
-chown $UID:$GID ./$NAME.img $NAME.qcow2
-rm -r $OS_PATH
+qemu-img convert -c ./$NAME.img -O qcow2 ./$NAME.qcow2
+#
+echo 1. Cleaning up interim artifacts...
+sudo rm -rf $OS_PATH
+sudo rm -rf $MNT_PATH
+rm *.img
+rm *.tar
