@@ -43,13 +43,15 @@ While I'm trying to streamline this, ensure it works on Windows/WSL, and eventua
 
 https://iximiuz.com/en/posts/from-docker-container-to-bootable-linux-disk-image/
 
-Other useful DigitalOcean resources include:
-
-https://docs.digitalocean.com/products/images/custom-images/details/limits/
+Other useful DigitalOcean resources include a high-level overview of VM compatiblity requirements:
 
 https://docs.digitalocean.com/products/images/custom-images/details/features/
 
-And a great talk by Mason Egger:
+And additional details about what constraints on custom VM images exist:
+
+https://docs.digitalocean.com/products/images/custom-images/details/limits/
+
+I can also recommend a great talk by Mason Egger on the subject of custom VM images for DigitalOcean droplets:
 
 https://www.youtube.com/watch?v=_Wk3jMKLQ1I
 
@@ -71,10 +73,6 @@ https://docs.digitalocean.com/products/droplets/how-to/kernel/
 
 - [ ] Should be able to "host" from droplet (e.g., cloud-init; sshd; etc.)
 
-      - [ ] When spinning up droplet: `/dev/sda1: Can't lookup blockdev; mounting... on /sysroot failed: no such file; mounting root: failed; initramfs emergency recovery shell launched`
-
-      - [ ] May need to switch bootloaders from extlinux to grub?
-
 - [x] Should extend to Alpine
 
 - [ ] Should extend to NixOS w/ configuration parameterized
@@ -86,3 +84,45 @@ https://docs.digitalocean.com/products/droplets/how-to/kernel/
 - [x] Add compression pass to `.img` artifact
 
 - [ ] Look into any other modifications to the build script that could theoretically be pulled into the Dockerfile specification
+
+- [ ] A lot of Dockerfile modifications (permissions, etc.) are probably OBE now
+
+## Compatibility
+
+### Checklist
+
+These are VM image compatibility requirements aggregated from various sources, and serve as a checklist for working the current VM image into something that can be deployed autonomously:
+
+- [x] Images must have a Unix-like OS (Windows images are not supported)
+
+- [x] Image file format must be one of: raw (`.IMG`), `.qcow2`, `.VHDX`, `.VDI`, or `.VMDK`; `ISO` images are not currently supported
+
+- [x] Images must be 100 GB or less when uncompressed, including the filesystem
+
+- [x] `cloud-init` must be installed (v0.77 or higher); other alternatives include `cloudbase-init`, `coreos-cloudinit`, `ignition`, or `bsd-cloudinit`.
+
+- [x] The default `cloud-init` configuration must not list the `NoCloud` data source before the `ConfigDrive` data source
+
+- [x] SSH (`sshd`) must be installed and configured to run on boot
+
+- [ ] DigitalOcean VMs created from custom images use DHCP to obtain an IP address; no additional network configuration should be necessary, but IPv6 is not supported
+
+- [x] An SSH key must be added when creating a VM from a custom image; password authentication is disabled by default
+
+- [ ] DHCP support is provided on port 67 in the DigitalOcean platform; if a firewall is in place, an outbound UDL exception is required to enable this traffic
+
+- [x] VMs must be started from the same cloud region where the custom image they use was uploaded
+
+### Other Notes
+
+- [ ] Total storage used by custom images is not readily visible within the DigitalOcean platform; neither will the image upload window display the current size
+
+- [ ] Custom image VMs on DigitalOcean neither receive an anchor IP address nor do they require one to us a reserved IP; an IP is automatically mapped to the VM's public IPv4 address instead
+
+- [ ] Importing a custom image by URL will fail if the image is served by a CDN that doesn't support HEAD requests, and therefore may require manual download/upload
+
+- [ ] Monitoring (within the DigitalOcean platform) must be enabled manually
+
+### Debugging Lessons
+
+- [ ] Device naming is slightly different; DigitalOcean uses `/dev/vda1` for root filesystem, not `/dev/sda1`
