@@ -45,6 +45,8 @@ sudo chmod -R u+rwX,go+rX,go-w $MNT_PATH
 #
 echo 1. Setting up extlinux w/ boot config...
 sudo extlinux --install $MNT_PATH/boot
+sudo cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg
+sudo cp fstab $MNT_PATH/etc/fstab
 sudo rm $MNT_PATH/.dockerenv
 #
 echo 1. Unmounting from device...
