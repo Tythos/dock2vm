@@ -27,4 +27,6 @@ RUN rc-update add sshd
 #RUN rc-update add chronyd
 RUN rc-update add cloud-init
 RUN setup-cloud-init
-COPY 10_digitalocean.cfg /etc/cloud/cloud.cfg.d/
+COPY 00_test.cfg /etc/cloud/cloud.cfg.d/00_test.cfg
+COPY cloud-init-local /etc/init.d/cloud-init-local
+#COPY 10_digitalocean.cfg /etc/cloud/cloud.cfg.d/
