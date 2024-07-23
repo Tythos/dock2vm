@@ -7,3 +7,4 @@ os/
 *.img.gz
 *.qcow2
 *.dir/
+notes.md
