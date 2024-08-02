@@ -148,3 +148,19 @@ At this stage, we have a functional VM image that can be run locally with QEMU. 
 1. Once the image upload process has complete (an entry will be listed it's "Uploaded" status will no longer be "Pending"), click the "More" button to the side of that entry and click "Start a droplet"
 
 1. The droplet, once started, can be directly accessed (provided cloud-init has enabled it) via the "Console" option
+
+## Debugging
+
+Currently stuck in initially-readonly-on-boot, here are potential fixes from https://github.com/iximiuz/docker-to-linux/issues/19 :
+
+- [ ] Scripted include of drive UUID in `fstab`?
+
+- [ ] Try a differen OS for reference (Ubuntu/Debian)?
+
+- [ ] "Remount" script to be run by `local` service via OpenRC?
+
+- [ ] Verify .docker files are removed from final VM before boot?
+
+- [ ] `dev` service dependency and/or running `/etc/init.d/root start`?
+
+- [ ] Explicitly enable services needed for boot process?

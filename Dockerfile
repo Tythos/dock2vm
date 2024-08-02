@@ -1,6 +1,7 @@
-FROM alpine:3.19
-RUN apk upgrade --no-cache --available
+FROM alpine:3.16
+RUN apk update
 RUN apk --no-cache --cache-max-age 30 add \
+#  busybox-initscripts \
   linux-virt \
   openrc \
   cloud-init \
@@ -18,6 +19,7 @@ RUN apk --no-cache --cache-max-age 30 add \
   gettext \
   lsblk \
   parted \
+#  udev \
   tzdata
 RUN echo "root:root" | chpasswd
 RUN mkdir -p /var/lib/cloud/scripts/per-boot
@@ -29,4 +31,6 @@ RUN rc-update add cloud-init
 RUN setup-cloud-init
 COPY 00_test.cfg /etc/cloud/cloud.cfg.d/00_test.cfg
 COPY cloud-init-local /etc/init.d/cloud-init-local
+#RUN touch /etc/network/interfaces
+#RUN touch /etc/.default_boot_services
 #COPY 10_digitalocean.cfg /etc/cloud/cloud.cfg.d/
