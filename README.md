@@ -164,3 +164,5 @@ Currently stuck in initially-readonly-on-boot, here are potential fixes from htt
 - [ ] `dev` service dependency and/or running `/etc/init.d/root start`?
 
 - [ ] Explicitly enable services needed for boot process?
+
+Other potentially-relevant issues: bootable disk not found. 9 commits back! WTF. There is a configuration issue here not captured by version control.
