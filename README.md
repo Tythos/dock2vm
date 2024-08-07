@@ -153,16 +153,20 @@ At this stage, we have a functional VM image that can be run locally with QEMU. 
 
 Currently stuck in initially-readonly-on-boot, here are potential fixes from https://github.com/iximiuz/docker-to-linux/issues/19 :
 
-- [ ] Scripted include of drive UUID in `fstab`?
+- [x] Scripted include of drive UUID in `fstab`?
 
 - [ ] Try a differen OS for reference (Ubuntu/Debian)?
 
 - [ ] "Remount" script to be run by `local` service via OpenRC?
 
-- [ ] Verify .docker files are removed from final VM before boot?
+- [x] Verify .docker files are removed from final VM before boot?
 
 - [ ] `dev` service dependency and/or running `/etc/init.d/root start`?
 
 - [ ] Explicitly enable services needed for boot process?
 
-Other potentially-relevant issues: bootable disk not found. 9 commits back! WTF. There is a configuration issue here not captured by version control.
+If the cloud-init execution is delayed in the boot process until after the root filesystem is remounted in read-write mode, then it does appear to execute successfully. This appears to happen when `chronyd` is enabled, but this fails to boot completely because the time server requests subsequently put the boot sequence into an infinite loop of failed network requests.
+
+At time of this commt, we have a secondary openrc script and some `sed` commands in the Dockerfile build that attempt to force a postponment of cloud-init until after the root filesystem is remounted. However, this will likely not address the underlying issue with `chronyd`, which should not be attempting to hijack a boot dependency when no network connection exists.
+
+*UPDATE*: Nope, that didn't work. Should reverts remount script and Dockerfile hooks.

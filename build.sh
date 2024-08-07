@@ -13,12 +13,10 @@ echo 1. Updating dependencies, building image filesystem...
 sudo apt-get update
 sudo apt-get -y install grub2-common grub-efi-amd64 fdisk qemu-utils
 #
-echo 1. Building image and dumping filesystem to .TAR archive...
+echo 1. Building image and caching filesystem via intermediate .TAR archive...
 docker build -q -t $NAME .
 export CID=$(docker run -d $NAME /bin/true)
 docker export -o ./$NAME.tar $CID
-#
-echo 1. Extracting tar archive...
 mkdir -p $OS_PATH
 tar -C $OS_PATH --numeric-owner -xf ./$NAME.tar
 #
@@ -46,7 +44,7 @@ sudo chmod -R 777 $MNT_PATH/etc/cloud
 echo 1. Setting up extlinux w/ boot config...
 sudo extlinux --install $MNT_PATH/boot
 sudo cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg
-sudo cp fstab $MNT_PATH/etc/fstab
+sudo cat ./fstab >> $MNT_PATH/etc/fstab
 sudo rm $MNT_PATH/.dockerenv
 #
 echo 1. Unmounting devices, writing MBR, converting image...
