@@ -32,14 +32,8 @@ RUN \
   # rc-update add chronyd &&\
   rc-update add cloud-init
 RUN setup-cloud-init
-COPY cloud-init-local /etc/init.d/cloud-init-local
 RUN \
   touch /etc/network/interfaces &&\
   touch /etc/.default_boot_services
 COPY 00_test.cfg /etc/cloud/cloud.cfg.d/00_test.cfg
-#COPY 10_digitalocean.cfg /etc/cloud/cloud.cfg.d/10_digitalocean.cfg
-COPY remount-root-rw /etc/init.d/remount-root-rw
-RUN chmod +x /etc/init.d/remount-root-rw
-RUN rc-update add remount-root-rw default
-RUN sed -i '/depend()/a \    after remount-root-rw' /etc/init.d/chronyd
-RUN sed -i '/depend()/a \    after remount-root-rw' /etc/init.d/cloud-init
+COPY 10_digitalocean.cfg /etc/cloud/cloud.cfg.d/10_digitalocean.cfg

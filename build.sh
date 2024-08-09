@@ -44,7 +44,7 @@ sudo chmod -R 777 $MNT_PATH/etc/cloud
 echo 1. Setting up extlinux w/ boot config...
 sudo extlinux --install $MNT_PATH/boot
 sudo cp syslinux.cfg $MNT_PATH/boot/syslinux.cfg
-sudo cat ./fstab >> $MNT_PATH/etc/fstab
+sudo echo /dev/vda1 / ext4 defaults 0 1 >> $MNT_PATH/etc/fstab
 sudo rm $MNT_PATH/.dockerenv
 #
 echo 1. Unmounting devices, writing MBR, converting image...
